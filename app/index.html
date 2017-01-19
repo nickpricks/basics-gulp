@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+
+  <!-- Disable tap highlight on IE -->
+  <meta name="msapplication-tap-highlight" content="no">
+
+  <!-- Web Application Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Web Starter Kit">
+  <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Web Starter Kit">
+  <link rel="apple-touch-icon" href="images/touch/apple-touch-icon.png">
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+  <meta name="msapplication-TileColor" content="#2F3BA2">
+
+  <!-- Color the status bar on mobile devices -->
+  <meta name="theme-color" content="#2F3BA2">
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      height: 100%;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<!-- Add your site or app content here -->
+
+<!-- build:js scripts/main.min.js -->
+<script src="scripts/main.js"></script>
+<!-- endbuild -->
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Demo</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Home</a></li>
+      <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1 <span
+        class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Page 1-1</a></li>
+          <li><a href="#">Page 1-2</a></li>
+          <li><a href="#">Page 1-3</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Page 2</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+      <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container well">
+  <h3>Html Js Css Demo</h3>
+
+  <p>Bootstrap Html5 boilerplate</p>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-2 col-md-4 position-static col-sm-12">
+      <ul class="list-group">
+        <li class="list-group-item">
+          <span class="badge">4</span>
+          Item 1
+        </li>
+        <li class="list-group-item"> Item 2</li>
+        <li class="list-group-item"> Item 3</li>
+        <li class="list-group-item"> Item 4</li>
+        <li class="list-group-item"> Item 5</li>
+        <li class="list-group-item"> Item 6</li>
+        <li class="list-group-item"> Item 7</li>
+        <li class="list-group-item"> Item 8</li>
+      </ul>
+    </div>
+    <div class="well col-xs-12 col-lg-10 col-md-8 position-static col-sm-12">
+      <div class="row">
+        <div class="col-lg-3">
+          <select onchange="filterBy()" class="form-control mt10">
+            <option value="" class="">-- Select --</option>
+            <option label="Option 1">Option 1</option>
+            <option label="Option 2">Option 2</option>
+          </select>
+        </div>
+        <div class="col-lg-3 pull-right">
+          <input onchange="changeAddress()" type="text" data-options="{}"
+                 id="auto-input" name="address" placeholder="Address"
+                 class="form-control" autocomplete="off">
+        </div>
+      </div>
+      <div class="row mt20">
+        <div id="map" class="col-md-12" style="height:300px !important">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function filterBy() {
+    console.info('Oh you tried filterBy, thanks but its a work in progress');
+  }
+  function changeAddress() {
+    console.info('Address changed, bye bye');
+  }
+  function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 30.7333, lng: 76.7794 },
+        zoom: 13
+      }),
+      input = document.getElementById('auto-input');
+
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+    var autocomplete = new google.maps.places.Autocomplete(input),
+      infowindow = new google.maps.InfoWindow(),
+      marker = new google.maps.Marker({
+        map: map,
+        anchorPoint: new google.maps.Point(0, -29)
+      });
+
+    autocomplete.bindTo('bounds', map);
+    autocomplete.addListener('place_changed', function () {
+      infowindow.close();
+      marker.setVisible(false);
+      var place = autocomplete.getPlace();
+      if (!place.geometry) {
+        window.alert("Autocomplete's returned place contains no geometry");
+        return;
+      }
+
+      // If the place has a geometry, then present it on a map.
+      if (place.geometry.viewport) {
+        map.fitBounds(place.geometry.viewport);
+      } else {
+        map.setCenter(place.geometry.location);
+        map.setZoom(17);
+      }
+      marker.setIcon(({
+        url: place.icon,
+        size: new google.maps.Size(71, 71),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34),
+        scaledSize: new google.maps.Size(35, 35)
+      }));
+      marker.setPosition(place.geometry.location);
+      marker.setVisible(true);
+
+      var address = '';
+      if (place.address_components) {
+        address = [
+          (place.address_components[0] && place.address_components[0].short_name || ''),
+          (place.address_components[1] && place.address_components[1].short_name || ''),
+          (place.address_components[2] && place.address_components[2].short_name || '')
+        ].join(' ');
+      }
+
+      infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+      infowindow.open(map, marker);
+    });
+  }
+</script>
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoQ9tP4PcYzZX8x8WcWsc2SquNcTF8XxA&libraries=places&callback=initMap"></script>
+</body>
+</html>
